@@ -1,0 +1,156 @@
+version: 2
+
+sources:
+  - name: raw_supply_chain
+    description: Raw supply chain data loaded from CSV files
+    database: supply_chain_service_level_analytics_dev
+    schema: source_schema_supply_chain_service_level_dev
+    tables:
+
+      - name: dim_customers
+        description: Customer master data
+        columns:
+          - name: customer_id
+            description: Unique identifier for each customer
+            data_tests: [not_null, unique]
+          - name: customer_name
+            description: Name of the customer
+            data_tests: [not_null]
+          - name: city
+            description: City where the customer operates
+
+      - name: dim_date
+        description: Date dimension table
+        columns:
+          - name: date
+            description: Calendar date
+            data_tests: [not_null, unique]
+          - name: mmm_yy
+            description: Month and year label (e.g. Jan-24)
+          - name: week_no
+            description: Week number of the year
+
+      - name: dim_products
+        description: Product master data
+        columns:
+          - name: product_id
+            description: Unique identifier for each product
+            data_tests: [not_null, unique]
+          - name: product_name
+            description: Name of the product
+            data_tests: [not_null]
+          - name: category
+            description: Product category
+
+      - name: dim_targets_orders
+        description: Customer-level service targets for order fulfilment
+        columns:
+          - name: customer_id
+            description: Unique identifier for each customer
+            data_tests: [not_null]
+          - name: ontime_target_pct
+            description: Target percentage for on-time delivery
+          - name: infull_target_pct
+            description: Target percentage for in-full delivery
+          - name: otif_target_pct
+            description: Target percentage for OTIF performance
+
+      - name: fact_order_lines
+        description: Raw order line data (one row per product in an order)
+        columns:
+          - name: order_id
+            description: Identifier for each order
+            data_tests: [not_null]
+          - name: order_placement_date
+            description: Date when the order was placed
+            data_tests: [not_null]
+          - name: customer_id
+            description: Customer placing the order
+            data_tests: [not_null]
+          - name: product_id
+            description: Product requested in the order line
+            data_tests: [not_null]
+          - name: order_qty
+            description: Quantity ordered
+          - name: agreed_delivery_date
+            description: Promised delivery date
+          - name: actual_delivery_date
+            description: Actual delivery date
+          - name: delivery_qty
+            description: Quantity delivered
+
+models:
+
+  - name: stg_customers
+    description: Cleaned customer data. Grain: one row per customer_id.
+    columns:
+      - name: customer_id
+        description: Unique customer identifier
+        data_tests: [not_null, unique]
+      - name: customer_name
+        description: Customer name
+        data_tests: [not_null]
+      - name: city
+        description: Customer city
+
+  - name: stg_date
+    description: Standardised date dimension. Grain: one row per date.
+    columns:
+      - name: date
+        description: Calendar date
+        data_tests: [not_null, unique]
+      - name: mmm_yy
+        description: Month-year label
+      - name: week_no
+        description: Week number
+
+  - name: stg_products
+    description: Cleaned product data. Grain: one row per product_id.
+    columns:
+      - name: product_id
+        description: Unique product identifier
+        data_tests: [not_null, unique]
+      - name: product_name
+        description: Product name
+        data_tests: [not_null]
+      - name: category
+        description: Product category
+
+  - name: stg_targets
+    description: Customer service level targets. Grain: one row per customer_id.
+    columns:
+      - name: customer_id
+        description: Unique customer identifier
+        data_tests: [not_null, unique]
+      - name: ontime_target_pct
+        description: Target on-time delivery percentage
+      - name: infull_target_pct
+        description: Target in-full delivery percentage
+      - name: otif_target_pct
+        description: Target OTIF percentage
+
+  - name: stg_order_lines
+    description: >
+      Cleaned order line data. Deduplicated at (order_id, product_id).
+      Grain: one row per order line.
+    columns:
+      - name: order_id
+        description: Order identifier
+        data_tests: [not_null]
+      - name: order_placement_date
+        description: Date order was placed
+        data_tests: [not_null]
+      - name: customer_id
+        description: Customer identifier
+        data_tests: [not_null]
+      - name: product_id
+        description: Product identifier
+        data_tests: [not_null]
+      - name: order_qty
+        description: Quantity ordered
+      - name: agreed_delivery_date
+        description: Promised delivery date
+      - name: actual_delivery_date
+        description: Actual delivery date
+      - name: delivery_qty
+        description: Quantity delivered
