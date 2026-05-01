@@ -154,3 +154,4 @@ models:
         description: Actual delivery date
       - name: delivery_qty
         description: Quantity delivered
+
