@@ -82,7 +82,7 @@ sources:
 models:
 
   - name: stg_customers
-    description: Cleaned customer data. Grain: one row per customer_id.
+    description: Cleaned customer data. Grain of one row per customer_id.
     columns:
       - name: customer_id
         description: Unique customer identifier
@@ -94,7 +94,7 @@ models:
         description: Customer city
 
   - name: stg_date
-    description: Standardised date dimension. Grain: one row per date.
+    description: Standardised date dimension. Grain of one row per date.
     columns:
       - name: date
         description: Calendar date
@@ -105,7 +105,7 @@ models:
         description: Week number
 
   - name: stg_products
-    description: Cleaned product data. Grain: one row per product_id.
+    description: Cleaned product data. Grain of one row per product_id.
     columns:
       - name: product_id
         description: Unique product identifier
@@ -117,7 +117,7 @@ models:
         description: Product category
 
   - name: stg_targets
-    description: Customer service level targets. Grain: one row per customer_id.
+    description: Customer service level targets. Grain of one row per customer_id.
     columns:
       - name: customer_id
         description: Unique customer identifier
@@ -154,4 +154,3 @@ models:
         description: Actual delivery date
       - name: delivery_qty
         description: Quantity delivered
-
