@@ -11,3 +11,4 @@ SELECT
     CAST(otif_target_pct AS numeric)     AS otif_target_pct
 
 FROM {{ source('raw_supply_chain', 'dim_targets_orders') }}
+

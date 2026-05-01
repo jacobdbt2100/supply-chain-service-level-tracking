@@ -10,3 +10,4 @@ SELECT
     CAST(week_no AS integer)     AS week_no
 
 FROM {{ source('raw_supply_chain', 'dim_date') }}
+
