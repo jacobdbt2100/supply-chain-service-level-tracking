@@ -47,11 +47,14 @@ WITH base AS (
             ELSE FALSE
         END AS line_fulfilled_flag,
 
-        -- Volume fill rate
+        -- Volume fill rate (in percentage)
+        ROUND(
         CASE
             WHEN ol.order_qty = 0 THEN NULL
-            ELSE ol.delivery_qty * 1.0 / ol.order_qty
-        END AS volume_fill_rate,
+            ELSE (ol.delivery_qty * 100.0 / ol.order_qty)
+        END,
+        2
+            ) AS volume_fill_rate_pct,
 
         -- Delay in days
         (ol.actual_delivery_date - ol.agreed_delivery_date) AS delay_days,
@@ -88,7 +91,7 @@ SELECT
     in_full_flag,
     otif_flag,
     line_fulfilled_flag,
-    volume_fill_rate,
+    volume_fill_rate_pct,
     delay_days,
     late_delivery_flag,
     month,
