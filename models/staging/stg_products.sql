@@ -53,4 +53,3 @@ SELECT
     category
 
 FROM cleaned
-

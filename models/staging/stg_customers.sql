@@ -53,4 +53,3 @@ SELECT
     city
 
 FROM cleaned
-

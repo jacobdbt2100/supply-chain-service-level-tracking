@@ -72,4 +72,3 @@ SELECT
     actual_delivery_date,
     delivery_qty
 FROM cleaned
-
