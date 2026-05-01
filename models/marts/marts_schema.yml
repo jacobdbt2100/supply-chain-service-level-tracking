@@ -1,0 +1,142 @@
+version: 2
+
+models:
+
+  - name: fct_order_lines
+    description: >
+      Enriched order line dataset with service level metrics.
+      Includes on-time, in-full, OTIF, fill rates, and delay calculations.
+      Grain - one row per order line (order_id + product_id).
+
+    columns:
+      - name: order_id
+        description: Order identifier (not unique at this level)
+        data_tests: [not_null]
+
+      - name: order_placement_date
+        description: Date the order was placed
+        data_tests: [not_null]
+
+      - name: order_qty
+        description: Quantity ordered
+
+      - name: delivery_qty
+        description: Quantity delivered
+
+      - name: customer_name
+        description: Name of the customer
+
+      - name: city
+        description: Customer city
+
+      - name: product_name
+        description: Product name
+
+      - name: category
+        description: Product category
+
+      - name: on_time_flag
+        description: TRUE if delivered on or before agreed delivery date
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: in_full_flag
+        description: TRUE if delivered quantity meets or exceeds ordered quantity
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: otif_flag
+        description: TRUE if both on_time_flag and in_full_flag are TRUE
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: line_fulfilled_flag
+        description: TRUE if the order line is fully fulfilled
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: volume_fill_rate
+        description: Ratio of delivery_qty to order_qty
+
+      - name: delay_days
+        description: Difference between actual and agreed delivery dates (in days)
+
+      - name: late_delivery_flag
+        description: TRUE if delivery occurred after agreed delivery date
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: month
+        description: Month extracted from order placement date
+
+      - name: week
+        description: Week extracted from order placement date
+
+      - name: day
+        description: Day extracted from order placement date
+
+
+  - name: fct_orders
+    description: >
+      Order-level aggregation of service performance metrics.
+      Flags are derived such that all order lines must satisfy the condition.
+      Grain - one row per order_id.
+
+    columns:
+      - name: order_id
+        description: Unique identifier for each order
+        data_tests: [not_null, unique]
+
+      - name: customer_name
+        description: Customer name
+
+      - name: city
+        description: Customer city
+
+      - name: order_placement_date
+        description: Date the order was placed
+        data_tests: [not_null]
+
+      - name: delay_days
+        description: Delivery delay in days at order level
+
+      - name: late_delivery_flag
+        description: TRUE if the order was delivered late
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: month
+        description: Month extracted from order placement date
+
+      - name: on_time_flag
+        description: TRUE only if all order lines were delivered on time
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: in_full_flag
+        description: TRUE only if all order lines were delivered in full
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: otif_flag
+        description: TRUE if both on_time_flag and in_full_flag are TRUE
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
