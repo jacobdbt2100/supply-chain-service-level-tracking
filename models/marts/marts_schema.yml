@@ -63,8 +63,8 @@ models:
           - accepted_values:
               values: [true, false]
 
-      - name: volume_fill_rate
-        description: Ratio of delivery_qty to order_qty
+      - name: volume_fill_rate_pct
+        description: Volume fill rate as a percentage (delivery_qty / order_qty)
 
       - name: delay_days
         description: Difference between actual and agreed delivery dates (in days)
